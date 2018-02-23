@@ -28,15 +28,18 @@ use std::io;
 use futures::future::FutureFrom;
 use http::{Method, Request, Response, StatusCode};
 
+/// Base trait for Endpoint
+pub trait HasMetadata {
+    /// Metadata about the endpoint.
+    const METADATA: Metadata;
+}
+
 /// A Matrix API endpoint.
-pub trait Endpoint<T, U> {
+pub trait Endpoint<T, U>: HasMetadata {
     /// Data needed to make a request to the endpoint.
     type Request: TryInto<Request<T>, Error = Error>;
     /// Data returned from the endpoint.
     type Response: FutureFrom<Response<U>, Error = Error>;
-
-    /// Metadata about the endpoint.
-    const METADATA: Metadata;
 }
 
 /// An error when converting an `Endpoint::Request` to a `http::Request` or a `http::Response` to
